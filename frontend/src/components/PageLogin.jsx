@@ -9,6 +9,7 @@ import { Form, Button, Card } from 'react-bootstrap';
 import axios from 'axios';
 import useAuth from '../hooks/index.jsx';
 import routes from '../routes';
+import loginImage from '../assets/logIn.jpeg';
 
 const PageLogin = () => {
   const auth = useAuth();
@@ -33,9 +34,11 @@ const PageLogin = () => {
       setAuthFailed(false);
       try {
         const res = await axios.post(routes.loginPath(), values);
-        auth.logIn(res.data);
-        console.log(location.state);
-        navigate(location.state.from.pathname);
+        localStorage.setItem('user', JSON.stringify(res.data));
+        auth.logIn();
+        console.log(localStorage);
+        const { from } = location.state;
+        navigate(from);
       } catch (error) {
         if (!error.isAxiosError) {
           console.log(error);
@@ -55,12 +58,14 @@ const PageLogin = () => {
         <div className="col-12 col-md-8 col-xxl-6">
           <Card>
             <Card.Body className="row p-5">
+              <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
+                <img src={loginImage} className="rounded-circle" alt="" />
+              </div>
               <Form onSubmit={formik.handleSubmit} className="col-12 col-md-6 mt-3 mt-mb-0">
                 <h1 className="text-center mb-4">Войти</h1>
-                <Form.Group>
+                <Form.Group className="mb-4 form-floating">
                   <Form.Control
                     name="username"
-                    autocomplete="username"
                     placeholder="Ваш ник"
                     id="username"
                     onChange={formik.handleChange}
@@ -72,10 +77,9 @@ const PageLogin = () => {
                   />
                   <Form.Label htmlFor="username">username</Form.Label>
                 </Form.Group>
-                <Form.Group>
+                <Form.Group className="mb-4 form-floating">
                   <Form.Control
                     name="password"
-                    autocomplete="current-password"
                     placeholder="Пароль"
                     type="password"
                     id="password"
