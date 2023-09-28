@@ -7,8 +7,8 @@ import { useFormik } from 'formik';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Form, Button, Card } from 'react-bootstrap';
 import axios from 'axios';
-import useAuth from '../hooks/index.jsx';
-import routes from '../routes';
+import { useAuth } from '../hooks/index.jsx';
+import routes from '../routes.js';
 import loginImage from '../assets/logIn.jpeg';
 
 const PageLogin = () => {
@@ -34,9 +34,7 @@ const PageLogin = () => {
       setAuthFailed(false);
       try {
         const res = await axios.post(routes.loginPath(), values);
-        localStorage.setItem('user', JSON.stringify(res.data));
-        auth.logIn();
-        console.log(localStorage);
+        auth.logIn(res.data);
         const { from } = location.state;
         navigate(from);
       } catch (error) {
@@ -56,7 +54,7 @@ const PageLogin = () => {
     <div className="container-fluid h-100">
       <div className="row justify-content-center align-content-center h-100">
         <div className="col-12 col-md-8 col-xxl-6">
-          <Card>
+          <Card className="border border-secondary">
             <Card.Body className="row p-5">
               <div className="col-12 col-md-6 d-flex align-items-center justify-content-center">
                 <img src={loginImage} className="rounded-circle" alt="" />
@@ -91,7 +89,7 @@ const PageLogin = () => {
                   />
                   <Form.Label htmlFor="password">password</Form.Label>
                 </Form.Group>
-                <Button variant="outline-primary" className="w-100 mb-3" type="submit">
+                <Button variant="secondary" className="w-100 mb-3" type="submit">
                   Войти
                 </Button>
               </Form>
